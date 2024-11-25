@@ -1,0 +1,18 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "ecr-public:CreateRepository",
+                "ecr-public:DescribeRepositories",
+                "ecr-public:DeleteRepository",
+                "ecr-public:TagResource",
+                "ecr-public:UntagResource",
+                "ecr-public:ListTagsForResource"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

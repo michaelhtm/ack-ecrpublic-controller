@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - ecrpublic.services.k8s.aws
   resources:
+  - repositories
   verbs:
   - get
   - list
