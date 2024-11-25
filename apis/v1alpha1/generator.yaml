@@ -1,0 +1,4 @@
+ignore:
+  resource_names:
+      - Repository
+model_name: ecr-public

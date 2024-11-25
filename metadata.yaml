@@ -1,0 +1,8 @@
+service:
+  full_name: Amazon Elastic Container Registry Public
+  short_name: ECR Public
+  link: https://aws.amazon.com/ecr/?gclid=EAIaIQobChMIht3SmqH4iQMV2k9HAR0V3RR1EAMYASAAEgJ2L_D_BwE&trk=9cfb29c6-1a6c-44a1-b9a4-64ab62b0f66e&sc_channel=ps&ef_id=EAIaIQobChMIht3SmqH4iQMV2k9HAR0V3RR1EAMYASAAEgJ2L_D_BwE:G:s&s_kwcid=AL!4422!3!658520965583!!!g!!!19852661684!149878725100
+  documentation: https://docs.aws.amazon.com/AmazonECRPublic/latest/APIReference/Welcome.html
+api_versions:
+  - api_version: v1alpha1
+    status: available
