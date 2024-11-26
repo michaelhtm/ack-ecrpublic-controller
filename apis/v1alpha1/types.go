@@ -27,3 +27,66 @@ var (
 	_ = &aws.JSONValue{}
 	_ = ackv1alpha1.AWSAccountID("")
 )
+
+// An object that represents an Amazon ECR image.
+type Image struct {
+	RepositoryName *string `json:"repositoryName,omitempty"`
+}
+
+// An object that describes an image that's returned by a DescribeImages operation.
+type ImageDetail struct {
+	RegistryID     *string `json:"registryID,omitempty"`
+	RepositoryName *string `json:"repositoryName,omitempty"`
+}
+
+// An object that represents the image tag details for an image.
+type ImageTagDetail struct {
+	CreatedAt *metav1.Time `json:"createdAt,omitempty"`
+}
+
+// The details of a public registry.
+type Registry struct {
+	RegistryARN *string `json:"registryARN,omitempty"`
+	RegistryID  *string `json:"registryID,omitempty"`
+	RegistryURI *string `json:"registryURI,omitempty"`
+}
+
+// The catalog data for a repository. This data is publicly visible in the Amazon
+// ECR Public Gallery.
+type RepositoryCatalogData struct {
+	AboutText            *string   `json:"aboutText,omitempty"`
+	Architectures        []*string `json:"architectures,omitempty"`
+	Description          *string   `json:"description,omitempty"`
+	LogoURL              *string   `json:"logoURL,omitempty"`
+	MarketplaceCertified *bool     `json:"marketplaceCertified,omitempty"`
+	OperatingSystems     []*string `json:"operatingSystems,omitempty"`
+	UsageText            *string   `json:"usageText,omitempty"`
+}
+
+// An object that contains the catalog data for a repository. This data is publicly
+// visible in the Amazon ECR Public Gallery.
+type RepositoryCatalogDataInput struct {
+	AboutText        *string   `json:"aboutText,omitempty"`
+	Architectures    []*string `json:"architectures,omitempty"`
+	Description      *string   `json:"description,omitempty"`
+	OperatingSystems []*string `json:"operatingSystems,omitempty"`
+	UsageText        *string   `json:"usageText,omitempty"`
+}
+
+// An object representing a repository.
+type Repository_SDK struct {
+	CreatedAt      *metav1.Time `json:"createdAt,omitempty"`
+	RegistryID     *string      `json:"registryID,omitempty"`
+	RepositoryARN  *string      `json:"repositoryARN,omitempty"`
+	RepositoryName *string      `json:"repositoryName,omitempty"`
+	RepositoryURI  *string      `json:"repositoryURI,omitempty"`
+}
+
+// The metadata that you apply to a resource to help you categorize and organize
+// them. Each tag consists of a key and an optional value. You define both.
+// Tag keys can have a maximum character length of 128 characters, and tag values
+// can have a maximum length of 256 characters.
+type Tag struct {
+	Key   *string `json:"key,omitempty"`
+	Value *string `json:"value,omitempty"`
+}

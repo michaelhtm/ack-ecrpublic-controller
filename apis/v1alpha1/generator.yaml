@@ -1,4 +1,41 @@
 ignore:
   resource_names:
-      - Repository
+      # - Repository
+  field_paths:
+    - CreateRepositoryInput.CatalogData
 model_name: ecr-public
+operations:
+  CreateRepository:
+    output_wrapper_field_path: Repository
+resources:
+  Repository:
+    fields:
+      CreatedAt:
+        is_immutable: true
+      Tags:
+        compare:
+          is_ignored: True
+    hooks:
+      delta_pre_compare:
+        code: compareTags(delta, a, b)
+      sdk_create_post_set_output:
+        template_path: hooks/repository/sdk_create_post_set_output.go.tpl
+      sdk_read_many_post_set_output:
+        template_path: hooks/repository/sdk_read_many_post_set_output.go.tpl
+    exceptions:
+      errors:
+        404:
+          code: RepositoryNotFoundException
+    renames:
+      operations:
+        CreateRepository:
+          input_fields:
+            RepositoryName: Name
+        DeleteRepository:
+          input_fields:
+            RepositoryName: Name
+        DescribeRepositories:
+          input_fields:
+            RepositoryNames: Names
+    update_operation:
+      custom_method_name: customUpdateRepository

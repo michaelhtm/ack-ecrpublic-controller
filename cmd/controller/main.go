@@ -39,6 +39,8 @@ import (
 	svcresource "github.com/aws-controllers-k8s/ecrpublic-controller/pkg/resource"
 	svcsdk "github.com/aws/aws-sdk-go/service/ecrpublic"
 
+	_ "github.com/aws-controllers-k8s/ecrpublic-controller/pkg/resource/repository"
+
 	"github.com/aws-controllers-k8s/ecrpublic-controller/pkg/version"
 )
 

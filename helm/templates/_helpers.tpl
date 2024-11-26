@@ -70,6 +70,26 @@ rules:
   - list
   - watch
 - apiGroups:
+  - ecrpublic.services.k8s.aws
+  resources:
+  - repositories
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - ecrpublic.services.k8s.aws
+  resources:
+  - repositories/status
+  verbs:
+  - get
+  - patch
+  - update
+- apiGroups:
   - services.k8s.aws
   resources:
   - adoptedresources
