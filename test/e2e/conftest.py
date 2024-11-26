@@ -42,4 +42,4 @@ def k8s_client():
 
 @pytest.fixture(scope='module')
 def ecrpublic_client():
-    return boto3.client('ecrpublic')
+    return boto3.client('ecr-public', 'us-east-1')

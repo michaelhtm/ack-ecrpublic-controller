@@ -1,0 +1,11 @@
+apiVersion: ecrpublic.services.k8s.aws/v1alpha1
+kind: Repository
+metadata:
+  name: $REPOSITORY_NAME
+  annotations:
+    services.k8s.aws/region: us-east-1
+spec:
+  name: $REPOSITORY_NAME
+  tags:
+  - key: "key"
+    value: "value"
