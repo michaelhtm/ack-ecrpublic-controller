@@ -28,8 +28,10 @@ import (
 	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
 	ackrequeue "github.com/aws-controllers-k8s/runtime/pkg/requeue"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
-	"github.com/aws/aws-sdk-go/aws"
-	svcsdk "github.com/aws/aws-sdk-go/service/ecrpublic"
+	"github.com/aws/aws-sdk-go-v2/aws"
+	svcsdk "github.com/aws/aws-sdk-go-v2/service/ecrpublic"
+	svcsdktypes "github.com/aws/aws-sdk-go-v2/service/ecrpublic/types"
+	smithy "github.com/aws/smithy-go"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
@@ -40,8 +42,7 @@ import (
 var (
 	_ = &metav1.Time{}
 	_ = strings.ToLower("")
-	_ = &aws.JSONValue{}
-	_ = &svcsdk.ECRPublic{}
+	_ = &svcsdk.Client{}
 	_ = &svcapitypes.Repository{}
 	_ = ackv1alpha1.AWSAccountID("")
 	_ = &ackerr.NotFound
@@ -49,6 +50,7 @@ var (
 	_ = &reflect.Value{}
 	_ = fmt.Sprintf("")
 	_ = &ackrequeue.NoRequeue{}
+	_ = &aws.Config{}
 )
 
 // sdkFind returns SDK-specific information about a supplied resource
@@ -73,10 +75,11 @@ func (rm *resourceManager) sdkFind(
 		return nil, err
 	}
 	var resp *svcsdk.DescribeRepositoriesOutput
-	resp, err = rm.sdkapi.DescribeRepositoriesWithContext(ctx, input)
+	resp, err = rm.sdkapi.DescribeRepositories(ctx, input)
 	rm.metrics.RecordAPICall("READ_MANY", "DescribeRepositories", err)
 	if err != nil {
-		if awsErr, ok := ackerr.AWSError(err); ok && awsErr.Code() == "RepositoryNotFoundException" {
+		var awsErr smithy.APIError
+		if errors.As(err, &awsErr) && awsErr.ErrorCode() == "RepositoryNotFoundException" {
 			return nil, ackerr.NotFound
 		}
 		return nil, err
@@ -142,12 +145,12 @@ func (rm *resourceManager) newListRequestPayload(
 	res := &svcsdk.DescribeRepositoriesInput{}
 
 	if r.ko.Status.RegistryID != nil {
-		res.SetRegistryId(*r.ko.Status.RegistryID)
+		res.RegistryId = r.ko.Status.RegistryID
 	}
 	if r.ko.Spec.Name != nil {
-		f3 := []*string{}
-		f3 = append(f3, r.ko.Spec.Name)
-		res.SetRepositoryNames(f3)
+		f3 := []string{}
+		f3 = append(f3, *r.ko.Spec.Name)
+		res.RepositoryNames = f3
 	}
 
 	return res, nil
@@ -172,7 +175,7 @@ func (rm *resourceManager) sdkCreate(
 
 	var resp *svcsdk.CreateRepositoryOutput
 	_ = resp
-	resp, err = rm.sdkapi.CreateRepositoryWithContext(ctx, input)
+	resp, err = rm.sdkapi.CreateRepository(ctx, input)
 	rm.metrics.RecordAPICall("CREATE", "CreateRepository", err)
 	if err != nil {
 		return nil, err
@@ -226,21 +229,21 @@ func (rm *resourceManager) newCreateRequestPayload(
 	res := &svcsdk.CreateRepositoryInput{}
 
 	if r.ko.Spec.Name != nil {
-		res.SetRepositoryName(*r.ko.Spec.Name)
+		res.RepositoryName = r.ko.Spec.Name
 	}
 	if r.ko.Spec.Tags != nil {
-		f1 := []*svcsdk.Tag{}
+		f1 := []svcsdktypes.Tag{}
 		for _, f1iter := range r.ko.Spec.Tags {
-			f1elem := &svcsdk.Tag{}
+			f1elem := &svcsdktypes.Tag{}
 			if f1iter.Key != nil {
-				f1elem.SetKey(*f1iter.Key)
+				f1elem.Key = f1iter.Key
 			}
 			if f1iter.Value != nil {
-				f1elem.SetValue(*f1iter.Value)
+				f1elem.Value = f1iter.Value
 			}
-			f1 = append(f1, f1elem)
+			f1 = append(f1, *f1elem)
 		}
-		res.SetTags(f1)
+		res.Tags = f1
 	}
 
 	return res, nil
@@ -273,7 +276,7 @@ func (rm *resourceManager) sdkDelete(
 	}
 	var resp *svcsdk.DeleteRepositoryOutput
 	_ = resp
-	resp, err = rm.sdkapi.DeleteRepositoryWithContext(ctx, input)
+	resp, err = rm.sdkapi.DeleteRepository(ctx, input)
 	rm.metrics.RecordAPICall("DELETE", "DeleteRepository", err)
 	return nil, err
 }
@@ -286,10 +289,10 @@ func (rm *resourceManager) newDeleteRequestPayload(
 	res := &svcsdk.DeleteRepositoryInput{}
 
 	if r.ko.Status.RegistryID != nil {
-		res.SetRegistryId(*r.ko.Status.RegistryID)
+		res.RegistryId = r.ko.Status.RegistryID
 	}
 	if r.ko.Spec.Name != nil {
-		res.SetRepositoryName(*r.ko.Spec.Name)
+		res.RepositoryName = r.ko.Spec.Name
 	}
 
 	return res, nil

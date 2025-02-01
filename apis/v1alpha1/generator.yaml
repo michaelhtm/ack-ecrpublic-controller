@@ -3,7 +3,8 @@ ignore:
       # - Repository
   field_paths:
     - CreateRepositoryInput.CatalogData
-model_name: ecr-public
+sdk_names:
+  model_name: ecr-public
 operations:
   CreateRepository:
     output_wrapper_field_path: Repository
